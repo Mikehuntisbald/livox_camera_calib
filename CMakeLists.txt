@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.0.2)
 project(livox_camera_calib)
+#set(OpenCV_DIR /home/sam/opencv-installed/usr/local/share/OpenCV)
+#list(APPEND CMAKE_PREFIX_PATH "/home/sam/opencv-installed/usr/local")
 
 ## Compile as C++14, supported in ROS Kinetic and newer
 add_compile_options(-std=c++14)
@@ -18,11 +20,12 @@ find_package(catkin REQUIRED COMPONENTS
   sensor_msgs
   std_msgs
 )
-
+#set(CMAKE_PREFIX_PATH /home/sam/opencv-installed/usr/local)
+#list(APPEND CMAKE_PREFIX_PATH "/home/sam/opencv-installed/usr/local")
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
 find_package(PCL REQUIRED)
-find_package(OpenCV)
+find_package(OpenCV REQUIRED)
 find_package(Threads)
 find_package(Ceres REQUIRED)
 
@@ -36,15 +39,19 @@ catkin_package(
 )
 
 include_directories(
-# include
+  include
   ${catkin_INCLUDE_DIRS}
   ${PCL_INCLUDE_DIRS}
   ${OpenCV_INCLUDE_DIRS}
 )
 
 add_executable(lidar_camera_calib src/lidar_camera_calib.cpp include/lidar_camera_calib.hpp)
-add_executable(lidar_camera_multi_calib src/lidar_camera_multi_calib.cpp include/lidar_camera_calib.hpp)
+add_executable(lidar_camera_multi_calib src/lsd.cpp src/lidar_camera_multi_calib.cpp include/lidar_camera_calib.hpp)
 add_executable(bag_to_pcd src/bag_to_pcd.cpp)
+
+message("OpenCV libraries: ${OpenCV_DIR}")
+message("OpenCV include dirs: ${OpenCV_INCLUDE_DIRS}")
+
 target_link_libraries(lidar_camera_calib 
   ${catkin_LIBRARIES} ${OpenCV_LIBS} ${PCL_LIBRARIES} ${CERES_LIBRARIES}
 )
